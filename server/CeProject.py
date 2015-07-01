@@ -11,6 +11,7 @@
 #    Cristi Constantin <crconstantin@luxoft.com>
 #    Daniel Cioata <dcioata@luxoft.com>
 #    Mihai Tudoran <mtudoran@luxoft.com>
+#    Craig Griffiths <craig.griffiths@codethink.co.uk>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1375,7 +1376,7 @@ class Project(object):
         if not res:
             return False
         cfg_path = self._get_config_path(user, config)
-        return self.parsers[user].list_settings(cfg_path, x_filter)
+        return self.parsers[user].listSettings(cfg_path, x_filter)
 
 
     def get_settings_value(self, user, config, key):
@@ -1387,7 +1388,7 @@ class Project(object):
         if not res:
             return False
         cfg_path = self._get_config_path(user, config)
-        return self.parsers[user].get_settings_value(cfg_path, key)
+        return self.parsers[user].getSettingsValue(cfg_path, key)
 
 
     def set_settings_value(self, user, config, key, value):
@@ -1400,7 +1401,7 @@ class Project(object):
             return False
         cfg_path = self._get_config_path(user, config)
         try:
-            ret = self.parsers[user].set_settings_value(cfg_path, key, value)
+            ret = self.parsers[user].setSettingsValue(cfg_path, key, value)
             if ret:
                 logDebug('Updated XML config `{}`, `{}` = `{}`.'.format(config, key, value))
             else:
@@ -1421,7 +1422,7 @@ class Project(object):
             return False
         cfg_path = self._get_config_path(user, config)
         try:
-            ret = self.parsers[user].del_settings_key(cfg_path, key, index)
+            ret = self.parsers[user].delSettingsKey(cfg_path, key, index)
             if ret:
                 logDebug('Deleted XML config `{}`, key `{}`, index `{}`.'.format(config, key, index))
             else: logDebug('Unable to delete XML config `{}`, key `{}`, index `{}` !'.format(config, key, index))
@@ -2392,7 +2393,7 @@ class Project(object):
             return False
         cfg_path = self._get_config_path(user, 'project')
         logDebug('Create Suite: Will create suite `{}` for user `{}` project.'.format(suite, user))
-        return self.parsers[user].set_persistent_suite(cfg_path, suite, info, order)
+        return self.parsers[user].setPersistentSuite(cfg_path, suite, info, order)
 
 
     def del_persistent_suite(self, user, suite):
@@ -2405,7 +2406,7 @@ class Project(object):
             return False
         xpath_suite = '/Root/TestSuite[tsName="{}"]'.format(suite)
         logDebug('Del Suite: Will remove suite `{}` from user `{}` project.'.format(suite, user))
-        return self.del_settings_key(user, 'project', xpath_suite)
+        return self.delSettingsKey(user, 'project', xpath_suite)
 
 
     def set_persistent_file(self, user, suite, fname, info={}, order=-1):
@@ -2418,7 +2419,7 @@ class Project(object):
             return False
         cfg_path = self._get_config_path(user, 'project')
         logDebug('Create File: Will create file `{0} - {1}` for user `{2}` project.'.format(suite, fname, user))
-        return self.parsers[user].set_persistent_file(cfg_path, suite, fname, info, order)
+        return self.parsers[user].setPersistentFile(cfg_path, suite, fname, info, order)
 
 
     def del_persistent_file(self, user, suite, fname):
@@ -2431,7 +2432,7 @@ class Project(object):
             return False
         xpath_file = '/Root/TestSuite[tsName="{0}"]/TestCase[tcName="{1}"]'.format(suite, fname)
         logDebug('Del File: Will remove file `{0} - {1}` from user `{2}` project.'.format(suite, fname, user))
-        return self.del_settings_key(user, 'project', xpath_file)
+        return self.delSettingsKey(user, 'project', xpath_file)
 
 
     def queue_file(self, user, suite, fname):
