@@ -10,6 +10,7 @@
 #    Andreea Proca <aproca@luxoft.com>
 #    Andrei Costachi <acostachi@luxoft.com>
 #    Cristi Constantin <crconstantin@luxoft.com>
+#    Craig Griffiths <craig.griffiths@codethink.co.uk>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,6 +40,7 @@ import os
 import sys
 import time
 import copy
+import errno
 import socket
 import signal
 import shutil
@@ -540,7 +542,13 @@ class TwisterRunner(object):
         """
         Re-create the ce_libs library file.
         """
-        libs_path = '{}/ce_libs'.format(EP_CACHE)
+        libs_path = EP_CACHE + os.sep + 'ce_libs'
+
+        try:
+            os.makedirs(libs_path)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise
 
         # Create ce_libs library file
         __init = open(libs_path + os.sep + 'ce_libs.py', mode='w', buffering=0)
@@ -560,7 +568,7 @@ class TwisterRunner(object):
         """
         Downloads all libraries from Central Engine.
         """
-        libs_path = '{}/ce_libs'.format(EP_CACHE)
+        libs_path = EP_CACHE + os.sep + 'ce_libs'
         reset_libs = False
         dl_libs = proxy().get_user_variable('dl_libs')
 
@@ -1427,7 +1435,7 @@ def warmup():
     """
     global EP_CACHE, EP_LOG, PORTABLE, LOGGER
 
-    EP_CACHE = TWISTER_PATH + '/.twister_cache/' + EP_NAME
+    EP_CACHE = TWISTER_PATH + os.sep + '.twister_cache'+ os.sep + EP_NAME
     EP_LOG = '{}/.twister_cache/{}_LIVE.log'.format(TWISTER_PATH, EP_NAME)
 
     # Create the EP folder
